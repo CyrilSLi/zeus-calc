@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Zeus Calculator</title>
     <meta charset="utf-8">
+    <title>Zeus Calculator</title>
+    <script src="data.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.min.js"></script>
@@ -15,7 +16,9 @@
         <p>JavaScript is required to use this website.</p>
     </noscript>
     <script type="text/python">
-        
+        from browser import ajax, document, html, window
+        if window.location.search == "":
+            document <= html.H1("Zeus Calculator")
     </script>
 </body>
 </html>
