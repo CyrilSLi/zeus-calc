@@ -18,7 +18,9 @@
     <script type="text/python">
         from browser import ajax, document, html, window
         if window.location.search == "":
-            document <= html.H1("Zeus Calculator")
+            document <= html.H1 ("Zeus Calculator")
+            for j, i in enumerate (window.calcData.to_dict ().keys ()):
+                document <= html.P (f"Calculator {j + 1}: {i}")
     </script>
 </body>
 </html>
