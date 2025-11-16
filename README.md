@@ -2,6 +2,8 @@
 
 An open source calculator platform
 
+<img width="2047" height="1216" alt="2025-11-16T03:44:31,079523776-05:00" src="https://github.com/user-attachments/assets/4f1c38a4-d85d-4358-a5a1-e2f5163d9ce7" />
+
 ## Name
 
 Alluding to a popular Omni(potent-ish) Calculator website, Zeus is a Greek god who rules as king of the gods.
