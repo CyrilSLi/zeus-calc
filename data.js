@@ -5,20 +5,20 @@ window.calcData = {
         "vars": [
             {
                 "name": "Length of one leg",
-                "symbols": ["a"],
+                "symbols": ["a", "x"],
                 "type": "I/O",
                 "required": false
 
             },
             {
                 "name": "Length of another leg",
-                "symbols": ["b"],
+                "symbols": ["b", "y"],
                 "type": "I/O",
                 "required": false
             },
             {
                 "name": "Length of hypotenuse",
-                "symbols": ["c"],
+                "symbols": ["c", "z"],
                 "type": "I/O",
                 "required": false
             }

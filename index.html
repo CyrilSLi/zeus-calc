@@ -8,7 +8,20 @@
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.min.js"></script>
     <style>
-
+        * {
+            touch-action: manipulation;
+            margin: 0px;
+            padding: 0px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            font-weight: normal;
+            border: none;
+        }
+        body {
+            padding: 20px;
+            overflow-x: hidden;
+        }
     </style>
 </head>
 <body>
@@ -19,8 +32,22 @@
         from browser import ajax, document, html, window
         if window.location.search == "":
             document <= html.H1 ("Zeus Calculator")
-            for j, i in enumerate (window.calcData.to_dict ().keys ()):
-                document <= html.P (f"Calculator {j + 1}: {i}")
+            for k, v in window.calcData.to_dict ().items ():
+                document <= html.ARTICLE (
+                    (html.A (html.H3 (v ["name"]), href = "?calc=" + k),
+                    html.P (v ["desc"]))
+                )
+        elif document.query.getfirst ("calc"):
+            calc_id = document.query.getfirst ("calc")
+            if calc_id not in window.calcData.to_dict ():
+                document <= html.H1 ("Zeus Calculator")
+                document <= html.H3 (f'Calculator "{calc_id}" not found')
+            calc = window.calcData [calc_id].to_dict ()
+            document <= html.H1 ("Zeus Calculator - " + calc ["name"])
+            document <= html.LABEL ("Variable Names", For = "var_names")
+            document <= html.SELECT ((
+                html.OPTION (", ".join (calc ["vars"] [j] ["symbols"] [i] for j in range (len (calc ["vars"])))) for i in range (len (calc ["vars"] [0] ["symbols"]))
+            ), id = "var_names", name = "var_names")
     </script>
 </body>
 </html>
