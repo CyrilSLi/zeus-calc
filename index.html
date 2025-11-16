@@ -39,6 +39,7 @@
                     html.P (v ["desc"]))
                 )
         elif document.query.getfirst ("calc"):
+            spacer = lambda: html.P (("&nbsp;" * 4))
             calc_id = document.query.getfirst ("calc")
             if calc_id not in window.calcData.to_dict ():
                 document <= html.H1 ("Zeus Calculator")
@@ -53,9 +54,9 @@
             for j, i in enumerate (calc ["vars"]):
                 document <= html.SECTION ((
                     html.LABEL (html.H3 (i ["symbols"] [0], id = f"varname{j}"), For = f"var{j}"),
-                    html.P (("&nbsp;" * 4)),
+                    spacer (),
                     html.INPUT (placeholder = i ["name"], type = "number", step = "any", id = f"var{j}", name = f"var{j}"),
-                    html.P (("&nbsp;" * 4)),
+                    spacer (),
                     html.P ("Input", id = f"mode{j}")
                 ), role = "group")
 
@@ -85,14 +86,15 @@
                     ordered_vars = [js.NULL] * num_vars
                     for i in vars:
                         ordered_vars [i [0]] = i [1]
-                    output = ordered_vars.index (js.NULL)
-                    for i in range (num_vars):
-                        document [f"mode{i}"].innerHTML = "Output" if output == i else "Input"
+                    output = [ordered_vars.index (js.NULL)]
                     result = calc ["func"] (tuple (ordered_vars))
-                    document [f"var{output}"].value = result
+                    for i in range (num_vars):
+                        document [f"mode{i}"].innerHTML = "Output" if i in output else "Input"
+                    for i, j in enumerate (result):
+                        document [f"var{output [i]}"].value = j
                     for i, j in enumerate (vars):
-                        if j [0] == output:
-                            vars [i] = [output, result] 
+                        if j [0] in output:
+                            vars [i] = [j [0], result] 
                 print (vars)
             for i in range (num_vars):
                 document [f"var{i}"].bind ("input", update_var)
