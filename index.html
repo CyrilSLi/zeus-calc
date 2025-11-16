@@ -38,6 +38,10 @@
                     (html.A (html.H3 (v ["name"]), href = "?calc=" + k),
                     html.P (v ["desc"]))
                 )
+            document <= html.ARTICLE (
+                (html.A (html.H3 ("Make Your Own Calculator"), href = "custom.html"),
+                html.P ("For all sorts of numerical problems in your life!")
+            ))
         elif document.query.getfirst ("calc"):
             spacer = lambda: html.P (("&nbsp;" * 4))
             calc_id = document.query.getfirst ("calc")
@@ -46,7 +50,10 @@
                 document <= html.H3 (f'Calculator "{calc_id}" not found')
             calc = window.calcData [calc_id].to_dict ()
             num_vars = len (calc ["vars"])
-            document <= html.H1 ("Zeus Calculator - " + calc ["name"])
+            document <= html.SECTION ((
+                html.A (html.BUTTON ("Back"), href = "?"),
+                html.H1 ("Zeus Calculator - " + calc ["name"])
+            ), role = "group")
             document <= html.LABEL ("Variable Names", For = "var_names")
             document <= html.SELECT ((
                 html.OPTION (", ".join (calc ["vars"] [j] ["symbols"] [i] for j in range (num_vars))) for i in range (len (calc ["vars"] [0] ["symbols"]))
@@ -59,6 +66,9 @@
                     spacer (),
                     html.P ("Input", id = f"mode{j}")
                 ), role = "group")
+            document <= html.P ()
+            document <= html.P ("Code:")
+            document <= html.PRE (calc ["func"].toString ())
 
             def update_var_names (ev):
                 for j in range (num_vars):
@@ -86,19 +96,23 @@
                     ordered_vars = [js.NULL] * num_vars
                     for i in vars:
                         ordered_vars [i [0]] = i [1]
-                    output = [ordered_vars.index (js.NULL)]
                     result = calc ["func"] (tuple (ordered_vars))
+                    output = [i for i, j in enumerate (ordered_vars) if j == js.NULL] [ : len (result)]
                     for i in range (num_vars):
                         document [f"mode{i}"].innerHTML = "Output" if i in output else "Input"
                     for i, j in enumerate (result):
                         document [f"var{output [i]}"].value = j
                     for i, j in enumerate (vars):
                         if j [0] in output:
-                            vars [i] = [j [0], result] 
-                print (vars)
+                            res_item = result [output.index (j [0])]
+                            try:
+                                float (res_item)
+                            except ValueError:
+                                pass
+                            else:
+                                vars [i] = [j [0], res_item]
             for i in range (num_vars):
                 document [f"var{i}"].bind ("input", update_var)
-
     </script>
 </body>
 </html>
