@@ -23,14 +23,14 @@ window.calcData = {
                 "required": false
             }
         ],
-        "num_vars": 2,
+        "required_vars": 2,
         "func": (args) => {
             if (args [0] == null) {
-                return Math.sqrt (args [2] ** 2 - args [1] ** 2);
+                return Math.sqrt (args [2] ** 2 - args [1] ** 2).toPrecision (10) / 1;
             } else if (args [1] == null) {
-                return Math.sqrt (args [2] ** 2 - args [0] ** 2);
+                return Math.sqrt (args [2] ** 2 - args [0] ** 2).toPrecision (10) / 1;
             } else if (args [2] == null) {
-                return Math.sqrt (args [0] ** 2 + args [1]) ** 2;
+                return Math.sqrt (args [0] ** 2 + args [1] ** 2).toPrecision (10) / 1;
             }
         }
     }

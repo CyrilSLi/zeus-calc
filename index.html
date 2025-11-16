@@ -30,6 +30,7 @@
     </noscript>
     <script type="text/python">
         from browser import ajax, document, html, window
+        import javascript as js
         if window.location.search == "":
             document <= html.H1 ("Zeus Calculator")
             for k, v in window.calcData.to_dict ().items ():
@@ -43,11 +44,59 @@
                 document <= html.H1 ("Zeus Calculator")
                 document <= html.H3 (f'Calculator "{calc_id}" not found')
             calc = window.calcData [calc_id].to_dict ()
+            num_vars = len (calc ["vars"])
             document <= html.H1 ("Zeus Calculator - " + calc ["name"])
             document <= html.LABEL ("Variable Names", For = "var_names")
             document <= html.SELECT ((
-                html.OPTION (", ".join (calc ["vars"] [j] ["symbols"] [i] for j in range (len (calc ["vars"])))) for i in range (len (calc ["vars"] [0] ["symbols"]))
+                html.OPTION (", ".join (calc ["vars"] [j] ["symbols"] [i] for j in range (num_vars))) for i in range (len (calc ["vars"] [0] ["symbols"]))
             ), id = "var_names", name = "var_names")
+            for j, i in enumerate (calc ["vars"]):
+                document <= html.SECTION ((
+                    html.LABEL (html.H3 (i ["symbols"] [0], id = f"varname{j}"), For = f"var{j}"),
+                    html.P (("&nbsp;" * 4)),
+                    html.INPUT (placeholder = i ["name"], type = "number", step = "any", id = f"var{j}", name = f"var{j}"),
+                    html.P (("&nbsp;" * 4)),
+                    html.P ("Input", id = f"mode{j}")
+                ), role = "group")
+
+            def update_var_names (ev):
+                for j in range (num_vars):
+                    document [f"varname{j}"].innerHTML = calc ["vars"] [j] ["symbols"] [document ["var_names"].selectedIndex]
+            document ["var_names"].bind ("change", update_var_names)
+
+            vars = []
+            def update_var (ev):
+                global vars
+                for i in vars:
+                    if i [0] == int (ev.target.id.lstrip ("var")):
+                        vars.remove (i)
+                if ev.target.value == "":
+                    for i in range (num_vars):
+                        document [f"mode{i}"].innerHTML = "Input"
+                        if i not in ([j [0] for j in vars]):
+                            document [f"var{i}"].value = ""
+                    return
+                else:
+                    vars.append ((int (ev.target.id.lstrip ("var")), float (ev.target.value)))
+
+                if len (vars) >= calc ["required_vars"]:
+                    while len (vars) > calc ["required_vars"]:
+                        vars.pop (0)
+                    ordered_vars = [js.NULL] * num_vars
+                    for i in vars:
+                        ordered_vars [i [0]] = i [1]
+                    output = ordered_vars.index (js.NULL)
+                    for i in range (num_vars):
+                        document [f"mode{i}"].innerHTML = "Output" if output == i else "Input"
+                    result = calc ["func"] (tuple (ordered_vars))
+                    document [f"var{output}"].value = result
+                    for i, j in enumerate (vars):
+                        if j [0] == output:
+                            vars [i] = [output, result] 
+                print (vars)
+            for i in range (num_vars):
+                document [f"var{i}"].bind ("input", update_var)
+
     </script>
 </body>
 </html>
